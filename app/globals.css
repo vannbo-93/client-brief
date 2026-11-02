@@ -1,26 +1,251 @@
-@import "tailwindcss";
+/** @format */
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Tailwind v4 dark mode controlled by `.dark` class */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Core */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  /* Extra semantic colors */
+  --color-neon: hsl(var(--neon));
+  --color-neon-foreground: hsl(var(--neon-foreground));
+
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+
+  /* Sidebar (admin dashboard - Phase 5) */
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  /* Typography (fonts loaded with next/font in app/layout.tsx) */
+  --font-sans: var(--font-body-family);
+  --font-mono: var(--font-mono-family);
+  --font-heading: var(--font-heading-family);
+
+  /* Radius (brutal DS = sharp corners) */
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius);
+  --radius-2xl: var(--radius);
+  --radius-3xl: var(--radius);
+  --radius-4xl: var(--radius);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* =========================
+   Design System Tokens (HSL)
+   ========================= */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 0%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 0%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 0%;
+
+  --primary: 0 0% 0%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 0 0% 0%;
+
+  --muted: 0 0% 94%;
+  --muted-foreground: 0 0% 40%;
+
+  --accent: 195 100% 50%;
+  --accent-foreground: 0 0% 0%;
+
+  --destructive: 0 100% 50%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 0 0% 0%;
+  --input: 0 0% 0%;
+  --ring: 195 100% 50%;
+
+  --radius: 0px;
+
+  --neon: 195 100% 50%;
+  --neon-foreground: 0 0% 0%;
+  --warning: 45 100% 50%;
+  --warning-foreground: 0 0% 0%;
+  --info: 220 100% 50%;
+  --info-foreground: 0 0% 100%;
+
+  --sidebar-background: 0 0% 0%;
+  --sidebar-foreground: 0 0% 100%;
+  --sidebar-primary: 195 100% 50%;
+  --sidebar-primary-foreground: 0 0% 0%;
+  --sidebar-accent: 0 0% 15%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 0 0% 25%;
+  --sidebar-ring: 195 100% 50%;
+
+  /* --font-space-grotesk and --font-jetbrains-mono come from next/font */
+  --font-heading-family: var(--font-space-grotesk), sans-serif;
+  --font-body-family: var(--font-space-grotesk), sans-serif;
+  --font-mono-family: var(--font-jetbrains-mono), monospace;
+
+  --border-thick: 3px;
+  --border-thin: 2px;
+}
+
+.dark {
+  --background: 0 0% 5%;
+  --foreground: 0 0% 100%;
+
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 100%;
+
+  --popover: 0 0% 8%;
+  --popover-foreground: 0 0% 100%;
+
+  --primary: 0 0% 100%;
+  --primary-foreground: 0 0% 0%;
+
+  --secondary: 0 0% 15%;
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 60%;
+
+  --accent: 195 100% 50%;
+  --accent-foreground: 0 0% 0%;
+
+  --destructive: 0 100% 50%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 0 0% 100%;
+  --input: 0 0% 100%;
+  --ring: 195 100% 50%;
+}
+
+/* =========================
+   Base styles
+   ========================= */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    font-family: var(--font-body-family);
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+
+  code,
+  pre,
+  .font-mono {
+    font-family: var(--font-mono-family);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* =========================
+   Components (Brutal UI)
+   ========================= */
+@layer components {
+  .brutal-border {
+    border: var(--border-thick) solid hsl(var(--border));
+  }
+
+  .brutal-border-thin {
+    border: var(--border-thin) solid hsl(var(--border));
+  }
+
+  .brutal-shadow {
+    box-shadow: 4px 4px 0px 0px hsl(var(--foreground));
+  }
+
+  .brutal-shadow-accent {
+    box-shadow: 4px 4px 0px 0px hsl(var(--accent));
+  }
+
+  .brutal-hover {
+    transition:
+      transform 0ms linear,
+      box-shadow 0ms linear;
+  }
+
+  .brutal-hover:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px hsl(var(--foreground));
+  }
+
+  .brutal-hover:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px 0px hsl(var(--foreground));
+  }
+
+  /* Brief statuses (match the CHECK constraint in supabase/schema.sql) */
+  .status-new {
+    @apply bg-muted text-foreground;
+  }
+
+  .status-reviewing {
+    background: hsl(var(--warning));
+    color: hsl(var(--warning-foreground));
+  }
+
+  .status-accepted {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .status-rejected {
+    background: hsl(var(--destructive));
+    color: hsl(var(--destructive-foreground));
+  }
 }
