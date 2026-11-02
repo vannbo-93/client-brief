@@ -7,8 +7,11 @@ import { FormProvider, useForm, type FieldPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
-import { StepIndicator } from "@/components/ui/brief/step-indicator";
-import { StepContact } from "@/components/ui/brief/steps/step-contact";
+import { StepIndicator } from "@/components/brief/step-indicator";
+import { StepContact } from "@/components/brief/steps/step-contact";
+import { StepProject } from "@/components/brief/steps/step-project";
+import { StepBudget } from "@/components/brief/steps/step-budget";
+import { StepReview } from "@/components/brief/steps/step-review";
 import {
   briefSchema,
   type BriefFormValues,
@@ -72,6 +75,12 @@ export function BriefForm() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  // من صفحة المراجعة: الانتقال مباشرة إلى خطوة معينة للتعديل
+  function goToStep(stepIndex: number) {
+    setStep(stepIndex);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   // Enter داخل حقل نصي يرسل النموذج كله افتراضياً
   // نحوّله إلى "التالي" في كل الخطوات عدا الأخيرة
   function handleKeyDown(event: React.KeyboardEvent<HTMLFormElement>) {
@@ -98,10 +107,10 @@ export function BriefForm() {
 
         <div className="mt-8">
           {step === 0 && <StepContact />}
-          {step === 1 && <StepPlaceholder name="Your project" />}
+          {step === 1 && <StepProject />}
           {step === 2 && <StepPlaceholder name="Details" />}
-          {step === 3 && <StepPlaceholder name="Budget & timeline" />}
-          {step === 4 && <StepPlaceholder name="Review" />}
+          {step === 3 && <StepBudget />}
+          {step === 4 && <StepReview onEdit={goToStep} />}
         </div>
 
         <div className="mt-10 flex items-center justify-between gap-4">

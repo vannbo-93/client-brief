@@ -4,7 +4,7 @@
 
 import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { FormField } from "@/components/ui/brief/form-field";
+import { FormField } from "@/components/brief/form-field";
 import type { BriefFormValues } from "@/lib/validations/brief";
 
 export function StepContact() {
