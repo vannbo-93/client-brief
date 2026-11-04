@@ -10,6 +10,7 @@ import {
   timelineLabels,
   type BriefFormValues,
 } from "@/lib/validations/brief";
+import { formatAnswer, getQuestions } from "@/lib/brief-questions";
 
 type StepReviewProps = {
   onEdit: (stepIndex: number) => void; // ينقل العميل إلى خطوة معينة
@@ -79,6 +80,14 @@ export function StepReview({ onEdit }: StepReviewProps) {
       </Section>
 
       <Section title="Details" onEdit={() => onEdit(2)}>
+        {/* نعرض فقط أسئلة النوع الحالي، بنصوص مفهومة */}
+        {getQuestions(values.project_type).map((question) => (
+          <Row
+            key={question.key}
+            label={question.label}
+            value={formatAnswer(question, values.details[question.key])}
+          />
+        ))}
         <Row label="References" value={values.reference_sites.join("\n")} />
       </Section>
 

@@ -2,16 +2,16 @@
 
 "use client";
 
-import { useFormContext } from "react-hook-form";
+import { useFormContext, type FieldPath } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import type { BriefFormValues } from "@/lib/validations/brief";
 
 type Option = { value: string; label: string; hint?: string };
 
 type OptionCardsProps = {
-  // الحقول التي تقبل خياراً واحداً من قائمة
-  name: "project_type" | "budget_range" | "timeline";
+  name: FieldPath<BriefFormValues>; // أي حقل في النموذج
   legend: string;
+  hint?: string;
   options: Option[];
   error?: string;
   columns?: 2 | 3;
@@ -20,6 +20,7 @@ type OptionCardsProps = {
 export function OptionCards({
   name,
   legend,
+  hint,
   options,
   error,
   columns = 2,
@@ -35,6 +36,10 @@ export function OptionCards({
       <legend className="mb-3 font-heading text-sm font-bold uppercase">
         {legend}
       </legend>
+
+      {hint && (
+        <p className="-mt-1 mb-3 text-sm text-muted-foreground">{hint}</p>
+      )}
 
       <div
         className={cn(

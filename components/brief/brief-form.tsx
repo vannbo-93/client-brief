@@ -10,8 +10,10 @@ import { Button } from "@/components/ui/button";
 import { StepIndicator } from "@/components/brief/step-indicator";
 import { StepContact } from "@/components/brief/steps/step-contact";
 import { StepProject } from "@/components/brief/steps/step-project";
+import { StepDetails } from "@/components/brief/steps/step-details";
 import { StepBudget } from "@/components/brief/steps/step-budget";
 import { StepReview } from "@/components/brief/steps/step-review";
+import { validateDetails } from "@/lib/brief-questions";
 import {
   briefSchema,
   type BriefFormValues,
@@ -29,15 +31,6 @@ const STEPS: { title: string; fields: FieldPath<BriefFormValues>[] }[] = [
   { title: "Budget & timeline", fields: ["budget_range", "timeline", "notes"] },
   { title: "Review", fields: [] },
 ];
-
-// مكان مؤقت للخطوات التي سنبنيها في الجزء 3
-function StepPlaceholder({ name }: { name: string }) {
-  return (
-    <div className="border-2 border-dashed border-border p-8 text-center font-mono text-sm text-muted-foreground">
-      {name}: coming in part 3
-    </div>
-  );
-}
 
 export function BriefForm() {
   const [step, setStep] = useState(0);
@@ -64,12 +57,34 @@ export function BriefForm() {
     const isStepValid = await methods.trigger(STEPS[step].fields, {
       shouldFocus: true,
     });
-    if (!isStepValid) return;
+
+    // الخطوة 3: أسئلة Details تعتمد على نوع المشروع،
+    // لذلك نتحقق منها بدالة منفصلة بدل Zod
+    let areDetailsValid = true;
+    if (step === 2) {
+      const { project_type, details } = methods.getValues();
+      const detailErrors = Object.entries(
+        validateDetails(project_type, details),
+      );
+
+      detailErrors.forEach(([key, message], index) => {
+        methods.setError(
+          `details.${key}`,
+          { type: "manual", message },
+          { shouldFocus: index === 0 }, // المؤشر لأول خطأ فقط
+        );
+      });
+
+      areDetailsValid = detailErrors.length === 0;
+    }
+
+    if (!isStepValid || !areDetailsValid) return;
 
     setStep((current) => current + 1);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  // الرجوع للخطوة السابقة - القيم تبقى محفوظة
   function goBack() {
     setStep((current) => current - 1);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -108,7 +123,7 @@ export function BriefForm() {
         <div className="mt-8">
           {step === 0 && <StepContact />}
           {step === 1 && <StepProject />}
-          {step === 2 && <StepPlaceholder name="Details" />}
+          {step === 2 && <StepDetails />}
           {step === 3 && <StepBudget />}
           {step === 4 && <StepReview onEdit={goToStep} />}
         </div>

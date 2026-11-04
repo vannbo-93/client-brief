@@ -19,7 +19,8 @@ export const budgetValues = [
   "under_300",
   "300_700",
   "700_1500",
-  "1500_plus",
+  "1500_3000",
+  "3500_plus",
   "not_sure",
 ] as const;
 
@@ -71,7 +72,8 @@ export const budgetLabels: Record<BudgetRange, string> = {
   under_300: "Under $300",
   "300_700": "$300 – $700",
   "700_1500": "$700 – $1,500",
-  "1500_plus": "$1,500+",
+  "1500_3000": "$1,500 – $3,000",
+  "3500_plus": "$3500_plus",
   not_sure: "Not sure yet",
 };
 
