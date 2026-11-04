@@ -13,6 +13,8 @@ import { StepProject } from "@/components/brief/steps/step-project";
 import { StepDetails } from "@/components/brief/steps/step-details";
 import { StepBudget } from "@/components/brief/steps/step-budget";
 import { StepReview } from "@/components/brief/steps/step-review";
+import { BriefSuccess } from "@/components/brief/brief-success";
+import { submitBrief } from "@/app/brief/actions";
 import { validateDetails } from "@/lib/brief-questions";
 import {
   briefSchema,
@@ -36,6 +38,10 @@ export function BriefForm() {
   const [step, setStep] = useState(0);
   const isLastStep = step === STEPS.length - 1;
 
+  // حالة الإرسال: البريد المُرسل عند النجاح، ورسالة الخطأ عند الفشل
+  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   const methods = useForm<BriefFormValues, unknown, BriefInput>({
     resolver: zodResolver(briefSchema),
     // يظهر الخطأ بعد مغادرة الحقل، لا مع أول حرف
@@ -51,6 +57,9 @@ export function BriefForm() {
       notes: "",
     },
   });
+
+  // react-hook-form يعرف تلقائياً أن onSubmit ما زال يعمل
+  const isSubmitting = methods.formState.isSubmitting;
 
   // الانتقال للخطوة التالية بعد التحقق من حقول الخطوة الحالية فقط
   async function goNext() {
@@ -106,10 +115,24 @@ export function BriefForm() {
     }
   }
 
-  // يُستدعى فقط إذا نجح التحقق من كل الحقول
-  function onSubmit(data: BriefInput) {
-    // المرحلة 4: سنستبدل هذا بـ Server Action يحفظ في Supabase
-    console.log("Brief ready to send:", data);
+  // يُستدعى فقط إذا نجح التحقق من كل الحقول في المتصفح
+  async function onSubmit(data: BriefInput) {
+    setSubmitError(null);
+
+    const result = await submitBrief(data);
+
+    if (result.ok) {
+      setSubmittedEmail(data.client_email);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      setSubmitError(result.error);
+    }
+  }
+
+  // بعد النجاح: نستبدل النموذج كله بشاشة الشكر
+  // (يأتي بعد كل الـ hooks - React يمنع hooks بعد return شرطي)
+  if (submittedEmail) {
+    return <BriefSuccess email={submittedEmail} />;
   }
 
   return (
@@ -128,9 +151,22 @@ export function BriefForm() {
           {step === 4 && <StepReview onEdit={goToStep} />}
         </div>
 
+        {/* خطأ الإرسال من السيرفر */}
+        {submitError && (
+          <p
+            role="alert"
+            className="mt-8 border-2 border-destructive bg-destructive/10 p-4 text-sm font-medium text-destructive">
+            {submitError}
+          </p>
+        )}
+
         <div className="mt-10 flex items-center justify-between gap-4">
           {step > 0 ? (
-            <Button type="button" variant="outline" onClick={goBack}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={goBack}
+              disabled={isSubmitting}>
               Back
             </Button>
           ) : (
@@ -140,8 +176,12 @@ export function BriefForm() {
           {/* key مختلف لكل زر: يمنع React من إعادة استخدام نفس الزر
               وتحويله من button إلى submit أثناء النقر */}
           {isLastStep ? (
-            <Button key="submit" type="submit" variant="accent">
-              Send brief
+            <Button
+              key="submit"
+              type="submit"
+              variant="accent"
+              disabled={isSubmitting}>
+              {isSubmitting ? "Sending..." : "Send brief"}
             </Button>
           ) : (
             <Button key="next" type="button" variant="accent" onClick={goNext}>
