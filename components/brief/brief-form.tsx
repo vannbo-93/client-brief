@@ -55,6 +55,7 @@ export function BriefForm() {
       details: {},
       reference_sites: [],
       notes: "",
+      fax: "", // فخ البوتات
     },
   });
 
@@ -141,6 +142,23 @@ export function BriefForm() {
         onSubmit={methods.handleSubmit(onSubmit)}
         onKeyDown={handleKeyDown}
         noValidate>
+        {/* فخ البوتات: خارج الشاشة لا مخفي بـ display:none
+            لأن بعض البوتات تتجاهل الحقول المخفية تماماً.
+            tabIndex=-1 حتى لا يصل إليه مستخدم لوحة المفاتيح،
+            و aria-hidden حتى لا يقرأه قارئ الشاشة */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed -left-[9999px] top-0 h-px w-px overflow-hidden opacity-0">
+          <label htmlFor="fax">Fax (leave empty)</label>
+          <input
+            id="fax"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            {...methods.register("fax")}
+          />
+        </div>
+
         <StepIndicator steps={STEPS.map((s) => s.title)} current={step} />
 
         <div className="mt-8">

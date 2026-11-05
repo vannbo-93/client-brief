@@ -133,6 +133,8 @@ export const briefSchema = z.object({
   timeline: z.enum(timelineValues, { error: "Choose a timeline" }),
 
   notes: z.string().trim().max(3000, "Please keep it under 3000 characters"),
+  // فخ البوتات: حقل مخفي يجب أن يبقى فارغاً (انظر brief-form.tsx)
+  fax: z.string().max(200),
 });
 
 // النوع الذي يستخدمه النموذج - يُستخرج تلقائياً من المخطط

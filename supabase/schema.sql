@@ -43,3 +43,5 @@ create policy "Visitors can submit briefs"
   with check (status = 'new');
 
 -- Admin policies (select/update) will be added in Phase 5.
+-- ---------- Rate limiting ----------
+select tgname from pg_trigger where tgrelid = 'public.briefs'::regclass and not tgisinternal;
