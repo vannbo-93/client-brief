@@ -1,7 +1,7 @@
 /** @format */
 
 import type { Metadata } from "next";
-import { LoginForm } from "@/components/admin/login-form";
+import { LoginForm } from "@/app/admin/login-form";
 
 export const metadata: Metadata = {
   title: "Admin | Client Brief",
