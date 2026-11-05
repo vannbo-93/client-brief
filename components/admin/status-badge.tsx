@@ -5,7 +5,7 @@ import { statusLabels, type BriefStatus } from "@/lib/validations/brief";
 
 // الكلاسات معرّفة في globals.css (status-new, status-reviewing...)
 // Record يضمن وجود كلاس لكل حالة
-const statusClasses: Record<BriefStatus, string> = {
+export const statusClasses: Record<BriefStatus, string> = {
   new: "status-new",
   reviewing: "status-reviewing",
   accepted: "status-accepted",
