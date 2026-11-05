@@ -2,9 +2,12 @@
 
 "use server";
 
+import { after } from "next/server";
+
 import { createClient } from "@/lib/supabase/server";
 import { briefSchema } from "@/lib/validations/brief";
 import { cleanDetails, validateDetails } from "@/lib/brief-questions";
+import { notifyNewBrief } from "@/lib/email/notify-new-brief";
 
 // النتيجة التي ترجع للنموذج: نجاح، أو فشل مع رسالة للعميل
 export type SubmitBriefResult = { ok: true } | { ok: false; error: string };
@@ -31,6 +34,9 @@ export async function submitBrief(input: unknown): Promise<SubmitBriefResult> {
     };
   }
 
+  // فقط إجابات أسئلة النوع المختار - نستخدمها في الحفظ والبريد
+  const details = cleanDetails(data.project_type, data.details);
+
   // 3. الحفظ - أسماء الحقول تطابق أعمدة الجدول
   const supabase = await createClient();
   const { error } = await supabase.from("briefs").insert({
@@ -40,8 +46,7 @@ export async function submitBrief(input: unknown): Promise<SubmitBriefResult> {
     company: data.company || null,
     project_type: data.project_type,
     description: data.description,
-    // فقط إجابات أسئلة النوع المختار
-    details: cleanDetails(data.project_type, data.details),
+    details,
     reference_sites: data.reference_sites,
     budget_range: data.budget_range,
     timeline: data.timeline,
@@ -57,6 +62,10 @@ export async function submitBrief(input: unknown): Promise<SubmitBriefResult> {
       error: "Something went wrong. Please try again in a moment.",
     };
   }
+
+  // 4. إشعار البريد - يُنفَّذ بعد إرسال الرد للعميل
+  // العميل يرى شاشة الشكر فوراً، والبريد يُرسل في الخلفية
+  after(() => notifyNewBrief(data, details));
 
   return { ok: true };
 }
