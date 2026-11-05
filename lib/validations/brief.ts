@@ -142,3 +142,22 @@ export type BriefInput = z.infer<typeof briefSchema>;
 // النوع قبل التحقق (ما يكتبه العميل في الحقول)
 // BriefInput هو النوع بعد التحقق والتنظيف (ما يصل للسيرفر)
 export type BriefFormValues = z.input<typeof briefSchema>;
+// =========================================================
+// حالات الطلب - تطابق CHECK في schema.sql
+// يديرها المدير فقط، وليست جزءاً من نموذج العميل
+// =========================================================
+export const statusValues = [
+  "new",
+  "reviewing",
+  "accepted",
+  "rejected",
+] as const;
+
+export type BriefStatus = (typeof statusValues)[number];
+
+export const statusLabels: Record<BriefStatus, string> = {
+  new: "New",
+  reviewing: "Reviewing",
+  accepted: "Accepted",
+  rejected: "Rejected",
+};
